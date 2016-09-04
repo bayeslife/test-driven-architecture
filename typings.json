@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "any-promise": "registry:npm/any-promise#1.0.0+20160211003958",
+    "bluebird": "registry:npm/bluebird#3.4.1+20160811213708",
+    "xtend": "registry:npm/xtend#4.0.0+20160211003958",
+    "yargs": "registry:npm/yargs#3.31.0+20160316010718"
+  },
+  "ambientDependencies": {},
+  "globalDependencies": {    
+    "handlebars": "registry:dt/handlebars#4.0.5+20160804082238",
+    "node": "registry:dt/node#6.0.0+20160831021119"
+  }
+}

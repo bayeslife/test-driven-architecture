@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "dist/",
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "newLine": "LF"
+  },
+  "files": [
+     /*"src/simple.ts",*/
+    "src/templates/helpers.ts",
+    "src/index.ts",
+    "src/denormalizer.ts",
+    "src/templates/html.ts",
+    "typings/index.d.ts"
+  ]
+}

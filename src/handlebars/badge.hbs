@@ -1,0 +1,49 @@
+/* Mocks for {{raml.title}} */
+
+var mockServer = require('mockserver-client'),
+    mockServerClient = mockServer.mockServerClient;
+
+mockServerClient("localhost", 1080).mockAnyResponse(
+{{#each testlist.tests}}
+
+    {
+        'httpRequest': {
+            'method': '{{toUpperCase requestMethod}}',
+            'path': '{{requestPath}}',
+            'queryStringParameters': [
+{{#each requestQueryParameters}}
+                      {
+                          'name': '{parameter}}',
+                          'values': ['{example}}']
+                      }
+{{/each}}
+                  ],
+            'headers':[
+{{#if requestAccept}}
+                {
+                  'name': 'Content-Type', 'value': '{{{requestAccept}}}'
+                },
+{{/if}}
+{{#each requestHeaders}}
+                {
+                  'name': '{{this.name}}', 'values':['{{value}}']
+                },
+{{/each}}
+          ],
+{{#if requestBody}}
+          'body': {{requestBody}}
+{{/if}}
+        },
+        'httpResponse': {
+            'statusCode': {{responseStatusCode}},
+            'body': {{responseBody}},
+            'headers': [
+              { 'name': 'Content-Type', 'value': '{{responseContentType}}'}
+            ]
+        },
+        'times': {
+            'unlimited': true
+        }
+    }
+{{/each}}
+);

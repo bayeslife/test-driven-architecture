@@ -38,7 +38,7 @@ class Renderer {
 
      for (var name in hlprs.helpers) {
        let helperFn = hlprs.helpers[name];
-       console.log("RegisterHelper:"+name);
+       //console.log("RegisterHelper:"+name);
         handlebars.registerHelper(name,helperFn);
       }
    }

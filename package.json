@@ -7,19 +7,21 @@
     "dist/"
   ],
   "watch": {
-    "w": {
+    "wsimple": {
       "patterns": [
         "src",
+        "data",
         "solution",
         "test"
       ],
-      "extensions": "ts,json"
+      "extensions": "ts,json,hbs"
     }
   },
   "scripts": {
     "lint": "# tslint \"src/**/*.ts\"",
     "typings": "typings",
     "w": "rm -rf dist && clear && tsc && DEBUG=example node dist/index.js -s ./solution/solution1.json -e ./solution/environments.json -o build/summary.html ",
+    "wsimple": "rm -rf dist && clear && tsc && DEBUG=tda,denormalizer node dist/index.js -t ./data/typetests.json -s ./data/solution1.json -e ./data/architecture2.json -o build/summary.html ",
     "watch": "npm-watch"
   },
   "keywords": [
@@ -40,6 +42,7 @@
     "handlebars": "^4.0.5",
     "param-case": "^1.1.2",
     "pascal-case": "^1.1.2",
+    "rxjs": "^5.0.0-beta.11",
     "yargs": "^4.8.1"
   }
 }

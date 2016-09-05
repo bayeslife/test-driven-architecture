@@ -1,4 +1,4 @@
-var debug = require('debug')('example');
+var debug = require('debug')('tda');
 
 let pkg = require('../package.json');
 
@@ -23,6 +23,9 @@ let args: any = yargs
     .describe('e', 'Environment input File')
     .demand('e')
     .alias('e', 'environment')
+    .describe('t', 'Tests for particular architectural types')
+    .demand('t')
+    .alias('t', 'typetests')
     .describe('o', 'Output File')
     .demand('o')
     .alias('o', 'output')
@@ -30,14 +33,16 @@ let args: any = yargs
 
 let solution: string  = <string> args['s'];
 let environment: string  = <string> args['e'];
+let typetests: string  = <string> args['t'];
 let output: string  = <string> args['o'];
 
-console.log(solution);
 
-
+debug("Parse solution")
 let solution_json : any = JSON.parse(fs.readFileSync(solution,"UTF-8"));
+debug("Parse environment")
 let environment_json : any = JSON.parse(fs.readFileSync(environment,"UTF-8"));
-
+debug("Parse typetests")
+let typetests_json : any = JSON.parse(fs.readFileSync(typetests,"UTF-8"));
 
 let templates : any = {
     'index.html': htmlTemplate
@@ -52,7 +57,7 @@ function generate(basepath: string, asolution: any) {
 }
 
 
-denormalize(solution_json,environment_json).then(function(asolution: any){
+denormalize(solution_json,environment_json,typetests_json).then(function(asolution: any){
   generate(".",asolution).then(function(res: any){
     console.log("Generated");
     fs.writeFileSync(output,res);

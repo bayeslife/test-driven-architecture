@@ -1,0 +1,51 @@
+[
+  {
+    "type": "AngularJS",
+    "name": "pay.production.com",
+    "dependencies": [ "site.pay.corp.com", "api1-dmz" ]
+  },
+  {
+    "type": "Site",
+    "name": "site.pay.production.coom",
+    "dependencies": [ ]
+  },
+
+  { "name": "api1-dmz",
+    "type": "DotNetAPI",
+    "dependencies": [ "api2-internal" ]
+  },
+
+  { "name": "api2-internal",
+    "type": "MuleAPI",
+    "dependencies": [ "api3-application","/payment" ]
+  },
+
+  {
+    "type": "Application",
+    "name": "BackEndApplication",
+    "apis": [
+      {
+          "name": "api3-application",
+          "dependencies": [  ]
+      }
+    ]
+  },
+
+  {
+    "type": "Supplier",
+    "name": "PaymentSolutions",
+    "apis":[
+      { "name": "/payment",
+        "dependencies": [  ]
+      }
+    ]
+  },
+  {
+    "type": "Application",
+    "name": "AMQ",
+    "apis":[
+      { "name": "openwire"
+      }
+    ]
+  }
+]

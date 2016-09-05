@@ -35,32 +35,39 @@
   ga('set','page','/{{pascalCase solution.title}}');
   ga('send', 'pageview');
 
-
 </script>
 
 </head>
 <body>
   <div class="container">
 
-  <h1>Infrastructure View of solution: {{solution.title}}</h1>
+  <h1>Infrastructure View of solution</h1>
+
 
   <table>
-  {{#each solution.environments}}
     <tr>
-      {{#each solution.testscenarios}}
-      <td>{{scenario.description}}</td>
-      {{/each}}
+      <th>Component</th>
+        <th>Test</th>
+      {{#environments as | env |}}
+        <th>{{env.name}}</th>
+      {{/environments}}
     </tr>
-  {{/each}}
-  {{#each solution.environments}}
+
+  {{#each this.components as | comp |}}
+    {{#each comp.implementationTests as | test |}}
     <tr>
-    {{#each tests}}
-      <td>
-      {{~> badge.hbs ~}}
-    </td>
+      <td>{{comp.name}}</td>
+      <td>{{test.name}}</td>
+      {{#each ../../environments as | env |}}
+        <td>
+          {{comp.name}}
+        </td>
       {{/each}}
+
     </tr>
+    {{/each}}
   {{/each}}
+
 </table>
 
 </div>

@@ -6,7 +6,7 @@
     "yargs": "registry:npm/yargs#3.31.0+20160316010718"
   },
   "ambientDependencies": {},
-  "globalDependencies": {    
+  "globalDependencies": {
     "handlebars": "registry:dt/handlebars#4.0.5+20160804082238",
     "node": "registry:dt/node#6.0.0+20160831021119"
   }

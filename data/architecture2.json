@@ -1,0 +1,100 @@
+[
+  {
+    "name": "production",
+    "zones":[
+      {
+        "name": "public",
+        "components": [
+            {
+            "name": "AngularJS",
+            "hosts": [ {
+                "name": "browser"
+                }
+              ]
+            }
+          ]
+      },
+      {
+        "name":"dmz",
+        "network": "production-dmz.net",
+        "components": [
+            {
+              "name": "DotNetAPI",
+              "hosts": [ {
+                 "name":"dotnet1"
+                },{
+                  "name":"dotnet2"
+                  }
+                ]
+            }
+        ]
+      },
+      {
+        "name":"trusted",
+        "network": "production.net",
+        "components": [
+          {
+            "name":"MuleAPI",
+            "hosts": [ {
+               "name":"mule1"
+              },{
+                "name":"mule2"
+                }
+              ]
+          }
+        ],
+        "api": "api-internal.production.net"
+      }
+    ]
+  },
+  {
+    "name": "preproduction",
+    "zones":[
+      {
+        "name": "public",
+        "components": [
+            {
+            "name": "AngularJS",
+            "hosts": [ {
+               "name":"browser"
+              }
+              ]
+            }
+          ]
+      },
+      {
+        "name":"dmz",
+        "network": "production-dmz.net",
+        "components": [
+            {
+              "name": "DotNetAPI",
+              "hosts": [ {
+                 "name":"dotnet3"
+                },{
+                  "name":"dotnet4"
+                  }
+                ]
+            }
+        ]
+      },
+      {
+        "name":"trusted",
+        "network": "preproduction.net",
+        "components": [
+          {
+            "name":"MuleAPI",
+            "hosts": [ {
+               "name":"mule3"
+              },{
+                "name":"mule4"
+                }
+              ]
+          }
+        ],
+        "api": "api-internal.preproduction.net"
+      }
+    ]
+  }
+
+
+]

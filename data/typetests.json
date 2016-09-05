@@ -1,0 +1,36 @@
+{
+  "Site": {
+    "implementationTests": [
+      "hostname","client-connect","client-firewall","client-service"
+    ],
+    "infrastructureTests":[
+      "vip-hostname","client-connect-vip","client-firewall-vip","client-service-vip"
+    ]
+  },
+  "DotNetAPI": {
+    "implementationTests":[
+      "hostname","client-connect","client-firewall","client-service"
+    ],
+    "infrastructureTests":[
+      "vip-hostname","client-connect-vip","client-firewall-vip","client-service-vip"
+    ]
+  },
+  "MuleAPI": {
+    "implementationTests":[
+      "hostname","client-connect","client-firewall","client-service"
+    ],
+    "infrastructureTests":[
+      "vip-hostname","client-connect-vip","client-firewall-vip","client-service-vip"
+    ]
+  },
+  "Application": {
+    "implementationTests":[
+      "hostname","client-connect","client-firewall","client-service"
+    ]
+  },
+  "Supplier": {
+    "implementationTests":[
+      "hostname","client-connect","client-firewall","client-service"
+    ]
+  }
+}

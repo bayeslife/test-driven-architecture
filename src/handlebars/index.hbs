@@ -43,32 +43,28 @@
 
   <h1>Infrastructure View of solution</h1>
 
-
+<h2>Implementation Tests</h2>
   <table>
     <tr>
-      <th>Component</th>
-        <th>Test</th>
-      {{#environments as | env |}}
-        <th>{{env.name}}</th>
-      {{/environments}}
+      <th>name</th>
+      <th>component</th>
+      <th>environment</th>
+      <th>zone</th>
+      <th>host</th>
+      <th>test</th>
     </tr>
-
-  {{#each this.components as | comp |}}
-    {{#each comp.implementationTests as | test |}}
-    <tr>
-      <td>{{comp.name}}</td>
-      <td>{{test.name}}</td>
-      {{#each ../../environments as | env |}}
-        <td>
-          {{comp.name}}
-        </td>
-      {{/each}}
-
-    </tr>
+    {{#each implementationTests}}
+      <tr>
+        <td>{{name}}</td>
+        <td>{{component}}</td>
+        <td>{{environment}}</td>
+        <td>{{zone}}</td>
+        <td>{{host}}</td>
+        <td>{{test}}</td>
+      </tr>
     {{/each}}
-  {{/each}}
-
 </table>
+
 
 </div>
 

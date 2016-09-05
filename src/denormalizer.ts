@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+/// <reference path="../node_modules/alasql/dist/alasql.d.ts" />
 
 var debug = require('debug')('denormalizer');
 
@@ -6,6 +6,7 @@ import Promise = require('bluebird');
 
 import * as rx from "rxjs";
 
+var sql = require('alasql');
 
 export default function denormalize(solution: any[], environments: any[],typetests: any) : Promise<any>{
 
@@ -14,15 +15,25 @@ export default function denormalize(solution: any[], environments: any[],typetes
   data.environments = environments;
   data.typetests = typetests;
 
-  // data.setupHosts().then(function(res){
-  //   console.log(res);
-  // });
+  return new Promise(function(res,rej){
+    data
+      .setupHostTable()
+      .then(function(){
+        data
+          .setupImplementationTestsTable()
+          .then(function(){
 
-  data.updateTests().then(function(){
-    //console.log(data.solution);
-  });
+            data.setupImplementationTable();
+            return res({ "environments": environments, "components": solution, "implementationTests": data.implementation_tests_table })
+          })
+      });
 
-  return Promise.resolve({ "environments": environments, "components": solution})
+    // data.updateTests().then(function(){
+    //   //console.log(data.solution);
+    // });
+
+  })
+
 }
 
 
@@ -34,24 +45,35 @@ class SolutionData  {
 
   implementationComponents: any[];
 
-  setupHosts() : Promise<any> {
+  host_table: any[] = [];
+  tests_table: any[] = [];
+
+  implementation_tests_table: any[] =[];
+
+  setupHostTable() : Promise<any> {
     let t = this;
-    let result : any = [];
-    return new Promise(function(res,rej){
         return Promise.map(t.environments, function(environment) {
           return Promise.map(environment.zones, function(zone:any) {
             return Promise.map(zone.components, function(component:any) {
               return Promise.map(component.hosts, function(host:any) {
-                return result.push({ environment: environment.name, zone: zone.name, component: component.name , host: host.name});
+                return t.host_table.push({ environment: environment.name, zone: zone.name, component: component.name , host: host.name});
               })
             })
           })
-        })
-        .then(function () {
-          res(result);
         });
-      })
     }
+    setupImplementationTestsTable() : Promise<any> {
+      let t = this;
+          return Promise.map(t.typetests, function(type:any) {
+            return Promise.map(type.implementationTests, function(test:any) {
+                  return t.tests_table.push({ type: type.name, test: test});
+            })
+          });
+      }
+
+  setupImplementationTable() : void {
+    this.implementation_tests_table =  sql('SELECT HOSTS.host , HOSTS.environment, HOSTS.zone,HOSTS.component, COMPONENTS.name, TESTS.test FROM ? as HOSTS JOIN ? as COMPONENTS on HOSTS.component=COMPONENTS.type OUTER JOIN ? as TESTS on COMPONENTS.type=TESTS.type  ',[this.host_table, this.solution, this.tests_table]);
+  }
 
   updateTests() : Promise<any> {
     let t = this;

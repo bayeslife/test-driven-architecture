@@ -1,0 +1,49 @@
+[
+  {
+    "name": "dev",
+    "zones":[
+      {
+        "name":"dmz",
+        "network": "production-dmz.net",
+        "components": [
+            {
+              "name": "Site",
+              "hosts": [ {
+                 "name":"dotnet1"
+                }
+                ]
+            },
+            {
+              "name": "DotNetAPI",
+              "hosts": [ {
+                 "name":"dotnet1"
+                }
+                ]
+            }
+        ]
+      },
+      {
+        "name":"trusted",
+        "network": "production.net",
+        "components": [
+            {
+            "name": "AngularJS",
+            "hosts": [ {
+                "name": "browser"
+                }
+              ]
+            },{
+            "name":"WebAPI",
+            "hosts": [ {
+               "name":"mule1"
+              },{
+                "name":"mule2"
+                }
+              ]
+          }
+        ]
+      }
+    ]
+  }
+
+]

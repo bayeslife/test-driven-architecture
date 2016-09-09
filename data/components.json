@@ -1,12 +1,12 @@
 [
   {
-    "type": "AngularJS",
     "name": "pay.production.com",
+    "type": "AngularJS",
     "dependencies": [ "site.pay.corp.com", "api1-dmz" ]
   },
   {
-    "type": "Site",
     "name": "site.pay.production.coom",
+    "type": "Site",
     "dependencies": [ ]
   },
 
@@ -25,18 +25,15 @@
     "name": "BackEndApplication",
     "apis": [
       {
-          "name": "api3-application",
-          "dependencies": [  ]
+          "name": "api3-application"
       }
     ]
   },
-
   {
     "type": "Supplier",
     "name": "PaymentSolutions",
     "apis":[
-      { "name": "/payment",
-        "dependencies": [  ]
+      { "name": "/payment"
       }
     ]
   },
@@ -44,7 +41,8 @@
     "type": "Application",
     "name": "AMQ",
     "apis":[
-      { "name": "openwire"
+      {
+        "name": "openwire"
       }
     ]
   }

@@ -4,5 +4,6 @@ typings
 dist
 build
 solution
-
+data/work.json
+data/work-architecture-prod.json
 

@@ -15,9 +15,36 @@
           ]
       },
       {
+        "name":"presentation-dmz",
+        "network": "live.production.com",
+        "components": [
+          {
+            "name": "SiteService",
+            "hosts": []
+          },
+          {
+            "name": "WebAPIService",
+            "hosts": []
+          },
+          {
+            "name": "DotNetAPIService",
+            "hosts": []
+          }
+        ]
+      },
+      {
         "name":"dmz",
         "network": "production-dmz.net",
         "components": [
+          {
+            "name": "Site",
+            "hosts": [ {
+               "name":"dotnet1"
+              },{
+                "name":"dotnet2"
+                }
+              ]
+            },
             {
               "name": "DotNetAPI",
               "hosts": [ {
@@ -34,7 +61,7 @@
         "network": "production.net",
         "components": [
           {
-            "name":"MuleAPI",
+            "name":"WebAPI",
             "hosts": [ {
                "name":"mule1"
               },{
@@ -42,8 +69,7 @@
                 }
               ]
           }
-        ],
-        "api": "api-internal.production.net"
+        ]
       }
     ]
   },
@@ -90,8 +116,7 @@
                 }
               ]
           }
-        ],
-        "api": "api-internal.preproduction.net"
+        ]
       }
     ]
   }

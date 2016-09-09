@@ -7,7 +7,25 @@
     "dist/"
   ],
   "watch": {
-    "wsimple": {
+    "wwork": {
+      "patterns": [
+        "src",
+        "data",
+        "solution",
+        "test"
+      ],
+      "extensions": "ts,json,hbs"
+    },
+    "wdev": {
+      "patterns": [
+        "src",
+        "data",
+        "solution",
+        "test"
+      ],
+      "extensions": "ts,json,hbs"
+    },
+    "wprod": {
       "patterns": [
         "src",
         "data",
@@ -20,8 +38,9 @@
   "scripts": {
     "lint": "# tslint \"src/**/*.ts\"",
     "typings": "typings",
-    "w": "rm -rf dist && clear && tsc && DEBUG=example node dist/index.js -s ./solution/solution1.json -e ./solution/environments.json -o build/summary.html ",
-    "wsimple": "rm -rf dist && clear && tsc && DEBUG=tda,denormalizer node dist/index.js -t ./data/typetests.json -s ./data/solution1.json -e ./data/architecture2.json -o build/summary.html ",
+    "wprod": "clear && tsc && DEBUG=tda,denormalizer node dist/index.js -t ./data/typetests.json -s ./data/components.json -e ./data/architecture-prod.json -o build/summary-prod.html ",
+    "wdev": "clear && tsc && DEBUG=tda,denormalizer node dist/index.js -t ./data/typetests.json -s ./data/components.json -e ./data/architecture-dev.json -o build/summary-dev.html ",
+    "wwork": "clear && tsc && DEBUG=tda,denormalizer node dist/index.js -t ./data/typetests.json -s ./data/work.json -e ./data/work-architecture-prod.json -o build/summary-work.html ",
     "watch": "npm-watch"
   },
   "keywords": [

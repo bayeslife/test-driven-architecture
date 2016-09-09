@@ -12,7 +12,7 @@ A page containing a table with badges that call out to invoke tests relevent to 
 ## Representation
 
 The solution is to be represented as
-- an architecture in terms of conected zones and virtual and physical interfaces and hosts within the zones.
+- an architecture in terms of connected zones and virtual and physical interfaces and hosts within the zones.
 - a solution which identifies all the components and their connectivitiy
 - tests for each of the component types
 

@@ -1,6 +1,21 @@
 [
   {
-    "name": "Site",
+    "componentType": "FW",
+    "implementationTests": [
+    ],
+    "infrastructureTests":[
+      "Positive", "Negative"
+    ]
+  },
+  {
+    "componentType": "AngularJS",
+    "implementationTests": [
+    ],
+    "infrastructureTests":[
+    ]
+  },
+  {
+    "componentType": "Site",
     "implementationTests": [
       "hostname","client-connect","client-firewall","client-service"
     ],
@@ -9,7 +24,7 @@
     ]
   },
   {
-    "name": "DotNetAPI",
+    "componentType": "DotNetAPI",
     "implementationTests":[
       "hostname","client-connect","client-firewall","client-service"
     ],
@@ -18,7 +33,7 @@
     ]
   },
   {
-    "name": "MuleAPI",
+    "componentType": "WebAPI",
     "implementationTests":[
       "hostname","client-connect","client-firewall","client-service"
     ],
@@ -27,13 +42,13 @@
     ]
   },
   {
-      "name": "Application",
+      "componentType": "Application",
     "implementationTests":[
       "hostname","client-connect","client-firewall","client-service"
     ]
   },
   {
-    "name": "Supplier",
+    "componentType": "Supplier",
     "implementationTests":[
       "hostname","client-connect","client-firewall","client-service"
     ]

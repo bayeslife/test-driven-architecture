@@ -12,9 +12,9 @@ A page containing a table with badges that call out to invoke tests relevent to 
 ## Representation
 
 The solution is to be represented as
-1. an architecture : in terms of environments, connected zones,  virtual and physical interface components, and compute hosts.
-2. a solution which identifies all the application components and their connectivitiy
-3. tests for each of the architecture/application component types
+1. an architecture : in terms of environments, connected zones,  virtual and physical interface components, and compute hosts.  
+2. a solution which identifies all the application components and their connectivitiy  
+3. tests for each of the architecture/application component types  
 
 ## Desired output
 
@@ -46,26 +46,25 @@ The desired output is a set of tables with tests for each of the entities to be 
 ## Model
 ### Infrastructure Model
 
-Environments - Contain Zones
-Zones - Contain Components
-Components -
-- Compute -
--- depends - components that run/execute on the resource
--- services - each service component is load balanced across the compute hosts
-- ContentSwitch
--- services - what are provided through the switch
+1. Environments - Contain Zones  
+1. Zones - Contain Components  
+1. Components  
+ - Compute
+    - depends - components that run/execute on the resource  
+    - services - each service component is load balanced across the compute hosts
+ - ContentSwitch  
+    - services - what are provided through the switch
 
 ### Component Model
 IntegrationComponent
-- DotNetAPI or WebAPI
+-  DotNetAPI or WebAPI  
+
 ApplicationComponent
 - any number of  APIs
-SiteContent
-Site
+ - SiteContent
+ - Site
 
-### Implementations Prequisites
-
-
+### Test Badges To Be Created
 
 #### Connection
 
@@ -142,3 +141,8 @@ When a multiple requests are submitted to the <target content switch>
 and the rate is above the <target rate>
 Then some responses are 429 status code
 ```
+
+## Sample
+- See the sample solution json at data/components.json
+- See the sample architecture at data/architecture-dev.json and architecture-prod.json
+- See the sample tests at data/typetests.json

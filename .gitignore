@@ -2,8 +2,7 @@
 node_modules
 typings
 dist
-build
 solution
 data/work.json
 data/work-architecture-prod.json
-
+build/summary-work.html

@@ -74,6 +74,7 @@ class SolutionData  {
   firewall_table: any[] =[];
 
   setupContentSwitchHosts = () => {
+    debug("setupContentSwitchHosts")
     let t = this;
         return Promise.map(t.environments, function(environment) {
           return Promise.map(environment.zones, function(zone:any) {
@@ -87,6 +88,7 @@ class SolutionData  {
         });
     }
     setupServiceTable = () => {
+      debug("setupServiceTable")
         //console.log("Setup Service Table");
         let j1 = sql('SELECT S.name AS service,S.type AS serviceType  FROM ? as S ',[this.solution]);
         this.service_table = j1;
@@ -95,6 +97,7 @@ class SolutionData  {
     }
 
     setupComponentTypeTable = () =>  {
+      debug("setupComponentTypeTable")
       //console.log("setupComponentTypeTable");
       let t = this;
           return Promise.map(t.environments, function(environment) {
@@ -107,10 +110,11 @@ class SolutionData  {
       }
 
       setupComponentCommunicationTable = () => {
-        //console.log("setupComponentCommunicationTable");
+        debug("setupComponentCommunicationTable")
         let t = this;
         return Promise.map(t.solution, function(component:any) {
           if(component.dependencies){
+            debug("dependencies")
             return Promise.map(component.dependencies, function(dep:any) {
               return t.component_dependencies_table.push({ source: component.name, type: component.type, targetComponent: dep});
             })
@@ -122,14 +126,15 @@ class SolutionData  {
 
 
       setupComponentServicesTable = () => {
-        //console.log("setupComponentServicesTable");
+        debug("setupComponentServicesTable")
         let t = this;
             return Promise.map(t.environments, function(environment) {
               return Promise.map(environment.zones, function(zone:any) {
                 return Promise.map(zone.components, function(component:any) {
-                  return Promise.map(component.services, function(service:any) {
-                    return t.component_service_table.push({ environment: environment.name, zone: zone.name, infrastructure: component.name, infrastructureType: component.type , serviceType : service, hosts: component.hosts});
-                  })
+                  if(component.services)
+                    return Promise.map(component.services, function(service:any) {
+                      return t.component_service_table.push({ environment: environment.name, zone: zone.name, infrastructure: component.name, infrastructureType: component.type , serviceType : service, hosts: component.hosts});
+                    })
                 })
               })
             });
@@ -138,6 +143,7 @@ class SolutionData  {
 
 
   setupHostTable = () => {
+    debug("setupHostTable")
     let t = this;
         return Promise.map(t.environments, function(environment) {
           return Promise.map(environment.zones, function(zone:any) {
@@ -155,6 +161,7 @@ class SolutionData  {
     }
 
   setupImplementationTestsTable = () => {
+    debug("setupImplementationTestsTable")
     let t = this;
       return Promise.map(t.typetests, function(type:any) {
         return t.tests_table.push({ componentType: type.componentType, tests: type.implementationTests});
@@ -162,7 +169,7 @@ class SolutionData  {
     }
 
   setupImplementationTable = () =>{
-    //console.log(this.solution[0]);
+    debug("setupImplementationTable")
     this.implementation_tests_table =  sql('SELECT * FROM ? as S JOIN ? as T on S.serviceType=T.componentType  ',[this.service_table, this.tests_table]);
     //console.log(this.implementation_tests_table);
     return Promise.resolve(null);
@@ -172,15 +179,14 @@ class SolutionData  {
 
 
   updateServiceTable = () =>{
-    //console.log("updateServiceTable")
-    //console.log(this.component_service_table)
+    debug("updateServiceTable")
     let j2 = sql('select * FROM ? as D LEFT JOIN ? as C on C.serviceType=D.serviceType',[this.service_table,this.component_service_table]);
     this.service_table = j2;
     return Promise.resolve(null);
   }
 
   setupConnectivityTable = () =>{
-
+    debug("setupConnectivityTable")
     let j1 = sql('SELECT DEPENDENCY.source AS sComponent,DEPENDENCY.type AS sType, DEPENDENCY.targetComponent AS tComponent,DEPENDENCY2.type AS tType  FROM ? as DEPENDENCY join ? as DEPENDENCY2 on DEPENDENCY.targetComponent = DEPENDENCY2.source',[this.component_dependencies_table,this.component_dependencies_table]);
 
     let t = sql("SELECT * from ? as D where D.tComponent = 'pay.ami.co.nz'",[j1]);
@@ -203,6 +209,7 @@ class SolutionData  {
 
 
   setupLoadBalancerTable = () => {
+    debug("setupLoadBalancerTable")
     let j1 = sql('SELECT D.service,D.serviceType AS type  FROM ? as D',[this.service_table]);
     //console.log(j1)
 
@@ -223,8 +230,7 @@ class SolutionData  {
 
 
   setupFirewallTable = () => {
-
-    //console.log(this.component_connectivity_table);
+    debug("setupFirewallTable")
     let j4 = sql('SELECT * from ? AS C where C.sZone != C.tZone',[this.component_connectivity_table]);
     //console.log(j4);
 

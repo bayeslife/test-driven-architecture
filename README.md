@@ -12,9 +12,9 @@ A page containing a table with badges that call out to invoke tests relevent to 
 ## Representation
 
 The solution is to be represented as
-- an architecture in terms of connected zones and virtual and physical interfaces and hosts within the zones.
-- a solution which identifies all the components and their connectivitiy
-- tests for each of the component types
+1. an architecture : in terms of environments, connected zones,  virtual and physical interface components, and compute hosts.
+2. a solution which identifies all the application components and their connectivitiy
+3. tests for each of the architecture/application component types
 
 ## Desired output
 
@@ -49,40 +49,29 @@ The desired output is a set of tables with tests for each of the entities to be 
 Environments - Contain Zones
 Zones - Contain Components
 Components -
-  Compute -
-    depends - components
-    services - each service component is load balanced across the compute hosts
-
-  ContentSwitch
-    services - what are provided
+- Compute -
+-- depends - components that run/execute on the resource
+-- services - each service component is load balanced across the compute hosts
+- ContentSwitch
+-- services - what are provided through the switch
 
 ### Component Model
-
-
-## Candidate tests
+IntegrationComponent
+- DotNetAPI or WebAPI
+ApplicationComponent
+- any number of  APIs
+SiteContent
+Site
 
 ### Implementations Prequisites
 
-#### DNS
-```
-Given a client on the <implementation.network>
-and using the default name resolution,
-When the <implementation.hostname> is queried,
-Then the <implementation.hostip> is returned.
-```
 
-```
-Given a client on the <implementation network>
-and using the default name resolution,
-When the <implementation host ip> is queried,
-Then the <implementation host name> is returned.
-```
 
 #### Connection
 
 ```
-Given a client on the <implementation network>
-When an ssl connection is requested on a <implementation port>
+Given a client on the <zone>
+When an ssl connection is requested on a <application component port>
 and the client trusts the certificate authority
 Then the SSL connection is established
 ```
@@ -90,8 +79,8 @@ Then the SSL connection is established
 #### Component
 
 ```
-Given a client on <implementation network>
-When an <implementation https url> is established
+Given a client on <zone>
+When an <application component https url> is established
 and that request is the happy path request
 Then the component responds with a 200 status code
 ```
@@ -100,30 +89,30 @@ Then the component responds with a 200 status code
 
 #### DNS
 ```
-Given a client on a network
+Given a client on the <zone>
 and using the default name resolution,
-When the hostname of the VIP is queried,
-Then the host ip is returned.
+When the <host> is queried,
+Then the <hostip> is returned.
 ```
 
 ```
-Given a client on a network
+Given a client on the <zone>
 and using the default name resolution,
-When the hostip of the VIP is queried,
-Then the host name is returned.
+When the <hostip> is queried,
+Then the <host> is returned.
 ```
 
 #### Firewall
 ```
-Given a client on separate network
-When a tcpip connection is requested on a specific port
+Given a client on source <zone>
+When a tcpip connection is requested on a target zone and application component port
 Then the tcp ip connection is not terminated
 ```
 
 #### Connection
 ```
-Given a client on a <expected source network>
-When an ssl connection is requested on a specific port
+Given a client on a <source zone>
+When an ssl connection is requested on a specific <target content switch>
 and the client trusts the certificate authority
 Then the SSL connection is established
 ```
@@ -132,8 +121,8 @@ Then the SSL connection is established
 #### Load Balancing
 
 ```
-Given a client on a <expected source network>
-When a request is submitted to the <virtual api>
+Given a client on a <source zone>
+When a request is submitted to the <target content switch>
 and a single implemention is running
 Then response is success
 ```
@@ -141,15 +130,15 @@ Then response is success
 #### Rate Limiting
 
 ```
-Given a client on a <expected source network>
-When a multiple requests are submitted to the <virtual api>
+Given a client on a <source zone>
+When a multiple requests are submitted to the <target content switch>
 and the rate is below the <target rate>
 Then all responses are success
 ```
 
 ```
-Given a client on a <expected source network>
-When a multiple requests are submitted to the <virtual api>
+Given a client on a <source zone>
+When a multiple requests are submitted to the <target content switch>
 and the rate is above the <target rate>
 Then some responses are 429 status code
 ```

@@ -7,7 +7,7 @@
     "dist/"
   ],
   "watch": {
-    "wwork": {
+    "wprod": {
       "patterns": [
         "src",
         "data",

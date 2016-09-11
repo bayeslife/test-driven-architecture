@@ -3,37 +3,42 @@
     "name": "dev",
     "zones":[
       {
-        "name":"dmz",
-        "network": "production-dmz.net",
+        "name": "public",
         "components": [
             {
-              "name": "Site",
-              "hosts": [ {
-                 "name":"dotnet1"
-                }
-                ]
-            },
-            {
-              "name": "DotNetAPI",
-              "hosts": [ {
-                 "name":"dotnet1"
-                }
-                ]
-            }
-        ]
-      },
-      {
-        "name":"trusted",
-        "network": "production.net",
-        "components": [
-            {
-            "name": "AngularJS",
+            "name": "Browser",
+            "type": "Browser",
+            "services": ["Site"],
             "hosts": [ {
                 "name": "browser"
                 }
               ]
-            },{
-            "name":"WebAPI",
+            }
+          ]
+      },
+      {
+        "name":"trusted",
+        "network": "production-dmz.net",
+        "host": "routing-appliance",
+        "components": [
+          {
+            "name": "cs_app",
+            "type": "ContentSwitch",
+            "services": [ "SiteContent","DotNetAPI","WebAPI"]
+          },
+          {
+            "name": "IIS",
+            "type": "Compute",
+            "services": ["SiteContent","DotNetAPI"],
+            "hosts": [ {
+               "name":"dotnet1"
+              }
+              ]
+          },
+          {
+            "name":"Mule",
+            "type": "Compute",
+            "services": ["WebAPI"],
             "hosts": [ {
                "name":"mule1"
               },{

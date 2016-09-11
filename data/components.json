@@ -1,12 +1,12 @@
 [
   {
     "name": "pay.production.com",
-    "type": "AngularJS",
+    "type": "Site",
     "dependencies": [ "site.pay.corp.com", "api1-dmz" ]
   },
   {
-    "name": "site.pay.production.coom",
-    "type": "Site",
+    "name": "site.pay.production.com",
+    "type": "SiteContent",
     "dependencies": [ ]
   },
 
@@ -16,7 +16,7 @@
   },
 
   { "name": "api2-internal",
-    "type": "MuleAPI",
+    "type": "WebAPI",
     "dependencies": [ "api3-application","/payment" ]
   },
 

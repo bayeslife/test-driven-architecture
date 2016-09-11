@@ -43,6 +43,21 @@ The desired output is a set of tables with tests for each of the entities to be 
 | ----      | ---       | ---          | ----       | ---           | --- |
 | Permission| API1      | Query        | TestBadge  | TestBadge     | ... |
 
+## Model
+### Infrastructure Model
+
+Environments - Contain Zones
+Zones - Contain Components
+Components -
+  Compute -
+    depends - components
+    services - each service component is load balanced across the compute hosts
+
+  ContentSwitch
+    services - what are provided
+
+### Component Model
+
 
 ## Candidate tests
 

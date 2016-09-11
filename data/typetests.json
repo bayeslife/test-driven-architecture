@@ -8,9 +8,8 @@
     ]
   },
   {
-    "componentType": "AngularJS",
-    "implementationTests": [
-    ],
+    "componentType": "SiteContent",
+    "implementationTests": [ "hostname","serve-content" ],
     "infrastructureTests":[
     ]
   },

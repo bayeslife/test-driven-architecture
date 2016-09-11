@@ -16,52 +16,37 @@ export default function denormalize(solution: any[], environments: any[],typetes
   data.typetests = typetests;
 
   return new Promise(function(res,rej){
-    data
-      .setupComponentTypeTable()
+
+    data.setupContentSwitchHosts()
+      .then(data.setupServiceTable)
+      .then(data.setupComponentTypeTable)
+      .then(data.setupComponentCommunicationTable)
+      .then(data.setupHostTable)
+      .then(data.setupImplementationTestsTable)
+      .then(data.setupComponentServicesTable)
+      .then(data.updateServiceTable)
+      .then(data.setupLoadBalancerTable)
+      .then(data.setupImplementationTable)
+      .then(data.setupConnectivityTable)
+      .then(data.setupFirewallTable)
       .then(function(){
-
-        data
-          .setupLoadBalancerTable()
-          .then(function(){
-
-            data
-              .setupComponentCommunicationTable()
-              .then(function(){
-                data
-                  .setupHostTable()
-                  .then(function(){
-                    data
-                      .setupImplementationTestsTable()
-                      .then(function(){
-
-                        data.setupImplementationTable();
-                        data.setupConnectivityTable();
-                        data.updateLoadBalancerTable();
-                        data.setupFirewallTable();
-
-                        return res({
-                          hosts: data.host_table,
-                          firewalltests : data.firewalltests,
-                          firewall: data.firewall_table,
-                          componentTypes: data.componentType_table,
-                          dependencies: data.component_dependencies_table,
-                          loadbalancers: data.lb_table,
-                          environments: environments,
-                          components: solution,
-                          implementationTests: data.implementation_tests_table,
-                          connectivity: data.component_connectivity_table
-                        })
-                      })
-                  });
-              })
-          })
-
+        res({
+          hosts: data.host_table,
+          firewalltests : data.firewalltests,
+          firewall: data.firewall_table,
+          componentTypes: data.componentType_table,
+          dependencies: data.component_dependencies_table,
+          loadbalancers: data.lb_table,
+          environments: environments,
+          components: solution,
+          implementationTests: data.implementation_tests_table,
+          connectivity: data.component_connectivity_table,
+          serviceTypes: data.component_service_table,
+          services: data.service_table
+        })
       })
-
-  })
-
+    })
 }
-
 
 class SolutionData  {
 
@@ -69,9 +54,12 @@ class SolutionData  {
   environments : any[];
   typetests: any;
 
+  service_table: any[];
+
   implementationComponents: any[];
 
   componentType_table: any[] = [];
+  component_service_table: any[] = [];
   host_table: any[] = [];
   tests_table: any[] = [];
 
@@ -85,106 +73,159 @@ class SolutionData  {
   firewalltests : string[]= [];
   firewall_table: any[] =[];
 
-  setupComponentTypeTable() : Promise<any> {
+  setupContentSwitchHosts = () => {
     let t = this;
         return Promise.map(t.environments, function(environment) {
           return Promise.map(environment.zones, function(zone:any) {
             return Promise.map(zone.components, function(component:any) {
-                return t.componentType_table.push({ environment: environment.name, zone: zone.name, component: component.name , hosts: component.hosts});
+              if(component.type=='ContentSwitch'){
+                component.hosts = [ { "name": zone.host } ];
+                return Promise.resolve(null);
+              }
             })
           })
         });
     }
+    setupServiceTable = () => {
+        //console.log("Setup Service Table");
+        let j1 = sql('SELECT S.name AS service,S.type AS serviceType  FROM ? as S ',[this.solution]);
+        this.service_table = j1;
+        return Promise.resolve(true);
 
-  setupHostTable() : Promise<any> {
-    let t = this;
-        return Promise.map(t.environments, function(environment) {
-          return Promise.map(environment.zones, function(zone:any) {
-            return Promise.map(zone.components, function(component:any) {
-              return Promise.map(component.hosts, function(host:any) {
-                return t.host_table.push({ environment: environment.name, zone: zone.name, component: component.name , host: host.name});
+    }
+
+    setupComponentTypeTable = () =>  {
+      //console.log("setupComponentTypeTable");
+      let t = this;
+          return Promise.map(t.environments, function(environment) {
+            return Promise.map(environment.zones, function(zone:any) {
+              return Promise.map(zone.components, function(component:any) {
+                  return t.componentType_table.push({ environment: environment.name, zone: zone.name, component: component.type , hosts: component.hosts});
               })
             })
+          });
+      }
+
+      setupComponentCommunicationTable = () => {
+        //console.log("setupComponentCommunicationTable");
+        let t = this;
+        return Promise.map(t.solution, function(component:any) {
+          if(component.dependencies){
+            return Promise.map(component.dependencies, function(dep:any) {
+              return t.component_dependencies_table.push({ source: component.name, type: component.type, targetComponent: dep});
+            })
+          }else {
+             return;
+          }
+        });
+      }
+
+
+      setupComponentServicesTable = () => {
+        //console.log("setupComponentServicesTable");
+        let t = this;
+            return Promise.map(t.environments, function(environment) {
+              return Promise.map(environment.zones, function(zone:any) {
+                return Promise.map(zone.components, function(component:any) {
+                  return Promise.map(component.services, function(service:any) {
+                    return t.component_service_table.push({ environment: environment.name, zone: zone.name, infrastructure: component.name, infrastructureType: component.type , serviceType : service, hosts: component.hosts});
+                  })
+                })
+              })
+            });
+        }
+
+
+
+  setupHostTable = () => {
+    let t = this;
+        return Promise.map(t.environments, function(environment) {
+          return Promise.map(environment.zones, function(zone:any) {
+            return Promise.map(zone.components, function(component:any) {
+              if(component.type=='Compute'){
+                return Promise.map(component.hosts, function(host:any) {
+                  return t.host_table.push({ environment: environment.name, zone: zone.name, infrastructure: component.name, infrastructureType: component.type , host: host.name});
+                })
+              }else
+                return Promise.resolve(null);
+
+            })
           })
         });
     }
-  setupImplementationTestsTable() : Promise<any> {
+
+  setupImplementationTestsTable = () => {
     let t = this;
-        return Promise.map(t.typetests, function(type:any) {
-          return t.tests_table.push({ componentType: type.componentType, tests: type.implementationTests});
-        });
+      return Promise.map(t.typetests, function(type:any) {
+        return t.tests_table.push({ componentType: type.componentType, tests: type.implementationTests});
+      });
     }
 
-  setupImplementationTable() : void {
-    this.implementation_tests_table =  sql('SELECT HOSTS.host , HOSTS.environment, HOSTS.zone,HOSTS.component, COMPONENTS.name, TESTS.tests FROM ? as HOSTS JOIN ? as COMPONENTS on HOSTS.component=COMPONENTS.type JOIN ? as TESTS on COMPONENTS.type=TESTS.componentType  ',[this.host_table, this.solution, this.tests_table]);
+  setupImplementationTable = () =>{
+    //console.log(this.solution[0]);
+    this.implementation_tests_table =  sql('SELECT * FROM ? as S JOIN ? as T on S.serviceType=T.componentType  ',[this.service_table, this.tests_table]);
     //console.log(this.implementation_tests_table);
+    return Promise.resolve(null);
   }
 
-  setupComponentCommunicationTable() : Promise<any> {
-    let t = this;
-    return Promise.map(t.solution, function(component:any) {
-      if(component.dependencies){
-        return Promise.map(component.dependencies, function(dep:any) {
-          return t.component_dependencies_table.push({ source: component.name, type: component.type, targetComponent: dep});
-        })
-      }else {
-         return;
-      }
-    });
+
+
+
+  updateServiceTable = () =>{
+    //console.log("updateServiceTable")
+    //console.log(this.component_service_table)
+    let j2 = sql('select * FROM ? as D LEFT JOIN ? as C on C.serviceType=D.serviceType',[this.service_table,this.component_service_table]);
+    this.service_table = j2;
+    return Promise.resolve(null);
   }
 
-  setupConnectivityTable() : void {
+  setupConnectivityTable = () =>{
 
-    //
-    // let j1 = sql('SELECT DEPENDENCY.source AS sComponent,DEPENDENCY.type AS sType,DEPENDENCY2.source AS tComponent,DEPENDENCY2.type AS tType  FROM ? as DEPENDENCY join ? as DEPENDENCY2 on DEPENDENCY.targetComponent = DEPENDENCY2.source',[this.component_dependencies_table,this.component_dependencies_table,this.componentType_table,this.componentType_table]);
-    // //console.log(j1);
-    //
-    // let j2 = sql('select D.sComponent,D.sType,C.zone AS sZone,C.environment as sEnvironment,C.hosts AS sHosts,D.tComponent  ,D.tType FROM ? as D LEFT JOIN ? as C on C.component=D.sType',[j1,this.componentType_table]);
-    // console.log(j2);
-    // //console.log(this.componentType_table);
-    //
-    // let j3 = sql('select D.sComponent,D.sType,C.zone AS sZone,C.environment as sEnvironment,C.hosts AS sHosts,D.tComponent  ,D.tType FROM ? as D LEFT JOIN ? as C on C.component=D.sType',[j1,this.componentType_table]);
-    // console.log(j2);
+    let j1 = sql('SELECT DEPENDENCY.source AS sComponent,DEPENDENCY.type AS sType, DEPENDENCY.targetComponent AS tComponent,DEPENDENCY2.type AS tType  FROM ? as DEPENDENCY join ? as DEPENDENCY2 on DEPENDENCY.targetComponent = DEPENDENCY2.source',[this.component_dependencies_table,this.component_dependencies_table]);
 
-    this.component_connectivity_table =
-    sql('SELECT DEPENDENCY.source AS sComponent, DEPENDENCY.type as sType, COMP1.zone AS sZone, COMP1.environment AS sEnvironment, COMP1.hosts as sHosts, DEPENDENCY.targetComponent AS tComponent, DEPENDENCY2.type AS tType, COMP2.zone AS tZone, COMP2.environment AS tEnvironment, COMP2.hosts as tHosts   FROM ? as DEPENDENCY join ? as DEPENDENCY2 on DEPENDENCY.targetComponent = DEPENDENCY2.source JOIN ? as COMP1 on COMP1.component=DEPENDENCY.type JOIN ? as COMP2 on COMP2.component=DEPENDENCY2.type and COMP1.environment=COMP2.environment',[this.component_dependencies_table,this.component_dependencies_table,this.componentType_table,this.componentType_table]);
+    let t = sql("SELECT * from ? as D where D.tComponent = 'pay.ami.co.nz'",[j1]);
+    //console.log(this.component_dependencies_table);
+
+    //console.log(this.component_service_table[0]);
+
+    let j2 = sql('select D.sComponent,D.sType,C.zone AS sZone,C.environment as sEnvironment,C.infrastructure AS sInfrastructure,C.infrastructureType as sInfrastructureType,C.hosts AS sHosts,D.tComponent,D.tType FROM ? as D LEFT JOIN ? as C on C.serviceType=D.sType',[j1,this.component_service_table]);
+
+    //console.log(j2[0]);
+
+    let j3 = sql('select D.sComponent,D.sType,D.sEnvironment,D.sZone,D.sInfrastructure,D.sInfrastructureType,D.sHosts,D.tComponent ,D.tType,C.zone AS tZone,C.environment as tEnvironment,C.infrastructure AS tInfrastructure,C.infrastructureType as tInfrastructureType,C.hosts AS tHosts FROM ? as D LEFT JOIN ? as C on C.serviceType=D.tType',[j2,this.component_service_table]);
+
+    //console.log(j3[0]);
+
+    this.component_connectivity_table = j3;
+    return Promise.resolve(null);
+
+  }
+
+
+  setupLoadBalancerTable = () => {
+    let j1 = sql('SELECT D.service,D.serviceType AS type  FROM ? as D',[this.service_table]);
+    //console.log(j1)
+
+    let j2 = sql('SELECT  D.service,D.type,I.infrastructure,I.infrastructureType,I.environment,I.zone,I.hosts FROM ? as D join ? as I on D.type=I.serviceType',[j1,this.component_service_table]);
+    //console.log(this.component_service_table);
+    //console.log(j2)
+
+    let j3 = sql('SELECT  * FROM ? as D where D.infrastructureType="Compute"',[j2]);
+
+    let j4 = sql('SELECT  "LB_"+D.zone+"_"+D.service as name ,* FROM ? as D where D.infrastructureType="Compute"',[j2]);
+
+    //console.log(j4);
+    //this.lb_table = sql('SELECT "lb_"+LB.environment AS name , LB.component,LB.zone, LB.environment, LB.hosts  FROM ? as LB where infrastructureType="Compute" ',[this.lb_table]);
+    this.lb_table=j4;
+    return Promise.resolve(null);
+  }
+
+
+
+  setupFirewallTable = () => {
+
     //console.log(this.component_connectivity_table);
-  }
-
-  setupLoadBalancerTable() : Promise<any> {
-    let t = this;
-    return Promise.map(t.environments, function(environment) {
-      return Promise.map(environment.zones, function(zone:any) {
-        return Promise.map(zone.components, function(component:any) {
-          if(component.hosts && component.hosts.length>1){
-              return t.lb_table.push({ environment: environment.name, zone: zone.name, component: component.name , hosts: component.hosts});
-          }else{
-            return;
-          }
-        })
-      })
-    });
-
-  }
-
-  updateLoadBalancerTable() : void {
-    this.lb_table = sql('SELECT "lb_"+COMPONENT.name+"_"+LB.environment AS name , LB.component,LB.zone, LB.environment, LB.hosts, COMPONENT.name AS component  FROM ? as LB join ? as COMPONENT on LB.component = COMPONENT.type ',[this.lb_table,this.solution]);
-    //console.log(this.lb_table);
-  }
-
-
-  setupFirewallTable() : void {
-
-    let j1 = sql('SELECT DEPENDENCY.source AS sComponent, DEPENDENCY.type as sType, DEPENDENCY2.source AS tComponent, DEPENDENCY2.type AS tType FROM ? as DEPENDENCY join ? as DEPENDENCY2 on DEPENDENCY.targetComponent = DEPENDENCY2.source',[this.component_dependencies_table,this.component_dependencies_table]);
-    //console.log(j1);
-
-    let j2 = sql('SELECT D.sComponent, D.sType, H.zone as sZone, H.environment as sEnvironment, H.host as sHost, D.tComponent, D.tType FROM ? as D join ? H on H.component=D.sType',[j1,this.host_table]);
-    //console.log(j2);
-
-    let j3 = sql('SELECT D.sComponent, D.sType, D.sZone, D.sEnvironment, D.sHost, D.tComponent, D.tType, H.zone as tZone, H.environment as tEnvironment, H.host as tHost FROM ? as D join ? H on H.component = D.tType',[j2,this.host_table]);
-    //console.log(j3);
-
-    let j4 = sql('SELECT "FW:"+C.sHost+"_"+C.sZone+":"+C.tComponent+"_"+C.tZone AS rule,* from ? AS C where C.sZone != C.tZone',[j3]);
+    let j4 = sql('SELECT * from ? AS C where C.sZone != C.tZone',[this.component_connectivity_table]);
     //console.log(j4);
 
     this.firewall_table = j4;
@@ -195,5 +236,6 @@ class SolutionData  {
       fw.tests = this.firewalltests;
     }
     //console.log(this.firewall_table);
+    return Promise.resolve(null);
   }
 }

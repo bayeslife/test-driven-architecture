@@ -46,20 +46,27 @@
   <h2>Implementation Tests</h2>
     <table>
       <tr>
-        <th>name</th>
-        <th>component</th>
-        <th>environment</th>
-        <th>zone</th>
+        <th>Service</th>
+        <th>Service Type</th>
+        <th>Infrastructure</th>
+        <th>Infrastructure Type</th>
+        <th>Environment</th>
+        <th>Zone</th>
         <th>host</th>
         <th>test</th>
       </tr>
       {{#each implementationTests}}
         <tr>
-          <td>{{name}}</td>
-          <td>{{component}}</td>
+          <td>{{service}}</td>
+          <td>{{serviceType}}</td>
+          <td>{{infrastructure}}</td>
+          <td>{{infrastructureType}}</td>
           <td>{{environment}}</td>
           <td>{{zone}}</td>
-          <td>{{host}}</td>
+          <td>{{#each hosts}}
+                {{name}},
+              {{/each}}
+          </td>
           <td>{{#each tests}}{{this}},{{/each}}</td>
         </tr>
       {{/each}}
@@ -70,14 +77,16 @@
       <tr>
         <th>Name</th>
         <th>Zone</th>
-        <th>Component Service</th>
+        <th>Service</th>
+        <th>Infrastructure</th>
         <th>Target Hosts</th>
       </tr>
       {{#each loadbalancers}}
         <tr>
           <td>{{name}}</td>
           <td>{{zone}}</td>
-          <td>{{component}}</td>
+          <td>{{service}}</td>
+          <td>{{infrastructure}}</td>
           <td>
             {{#each hosts}}
               {{name}},
@@ -111,8 +120,8 @@
 
         <td>{{sComponent}}<br/>{{sType}}</td>
 
-        <td>{{sHost}}<br/>{{sZone}}</td>
-        <td>{{tHost}}<br/>{{tZone}}</td>
+        <td>{{#each sHosts}}{{name}},{{/each}}<br/>{{sZone}}</td>
+        <td>{{#each tHosts}}{{name}},{{/each}}<br/>{{tZone}}</td>
 
         <td>{{tComponent}}<br/>{{tType}}</td>
         <td>{{#each tests}}{{this}},{{/each}}</td>
@@ -126,37 +135,35 @@
   <h2>Connectivity</h2>
     <table>
       <tr>
-        <th>Source Component</th>
-        <th>Source Type</th>
+        <th>Source Service</th>
+        <th>Source Service Type</th>
+        <th>Source Infrastructure Type</th>
+        <th>Source Infrastructure</th>
         <th>Source Zone</th>
         <th>Source Environment</th>
-        <th>Source Hosts</th>
 
-        <th>Target Component</th>
-        <th>Target Type</th>
+        <th>Target Service</th>
+        <th>Target Service Type</th>
+        <th>Target Infrastructure Type</th>
+        <th>Target Infrastructure</th>
         <th>Target Zone</th>
         <th>Target Environment</th>
-        <th>Target Hosts</th>
       </tr>
       {{#each connectivity}}
         <tr>
           <td>{{sComponent}}</td>
           <td>{{sType}}</td>
+          <td>{{sInfrastructureType}}</td>
+          <td>{{sInfrastructure}}</td>
           <td>{{sZone}}</td>
           <td>{{sEnvironment}}</td>
-          <td>{{#each sHosts}}
-                {{name}},
-              {{/each}}
-          </td>
 
           <td>{{tComponent}}</td>
           <td>{{tType}}</td>
+          <td>{{tInfrastructureType}}</td>
+          <td>{{tInfrastructure}}</td>
           <td>{{tZone}}</td>
           <td>{{tEnvironment}}</td>
-          <td>{{#each tHosts}}
-                {{name}},
-              {{/each}}
-          </td>
         </tr>
       {{/each}}
   </table>
@@ -166,26 +173,49 @@
       <tr>
         <th>Environment</th>
         <th>Zone</th>
-        <th>Component Type</th>
+        <th>Infrastructure Type</th>
+        <th>Infrastructure</th>
         <th>Host</th>
       </tr>
       {{#each hosts}}
         <tr>
           <td>{{environment}}</td>
           <td>{{zone}}</td>
-          <td>{{component}}</td>
+          <td>{{infrastructureType}}</td>
+          <td>{{infrastructure}}</td>
           <td>{{host}}</td>
         </tr>
       {{/each}}
   </table>
 
+  <h2>Service Type to Infrastructure Type Mapping</h2>
+    <table>
+      <tr>
+        <th>Service Type</th>
+        <th>Infrastructure</th>
+        <th>Infrastructure Type</th>
+        <th>Zone</th>
+        <th>Environment</th>
 
-  <h2>Component Types</h2>
+      </tr>
+      {{#each serviceTypes}}
+        <tr>
+          <td>{{serviceType}}</td>
+          <td>{{infrastructure}}</td>
+          <td>{{infrastructureType}}</td>
+          <td>{{zone}}</td>
+          <td>{{environment}}</td>
+        </tr>
+      {{/each}}
+  </table>
+
+
+  <h2>Infrastructure Types</h2>
     <table>
       <tr>
         <th>Environment</th>
         <th>Zone</th>
-        <th>Component Type</th>
+        <th>Infrastructure Type</th>
         <th>Hosts</th>
       </tr>
       {{#each componentTypes}}
@@ -213,6 +243,34 @@
           <td>{{source}}</td>
           <td>{{type}}</td>
           <td>{{targetComponent}}</td>
+        </tr>
+      {{/each}}
+  </table>
+
+  <h2>Services</h2>
+    <table>
+      <tr>
+        <th> Service</th>
+        <th> Service Type</th>
+        <th> Infrastructure Type</th>
+        <th> Infrastructure</th>
+        <th> Zone</th>
+        <th> Environment</th>
+<th>Hosts</th>
+
+      </tr>
+      {{#each services}}
+        <tr>
+          <td>{{service}}</td>
+          <td>{{serviceType}}</td>
+          <td>{{infrastructureType}}</td>
+          <td>{{infrastructure}}</td>
+          <td>{{zone}}</td>
+          <td>{{environment}}</td>
+          <td>{{#each hosts}}
+                {{name}},
+              {{/each}}
+          </td>
         </tr>
       {{/each}}
   </table>

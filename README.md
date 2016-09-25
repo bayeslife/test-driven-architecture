@@ -11,7 +11,8 @@ A page containing a table with badges that call out to invoke tests relevent to 
 
 ## Representation
 
-The solution is to be represented as
+The solution is to be represented as:
+
 1. an architecture : in terms of environments, connected zones,  virtual and physical interface components, and compute hosts.  
 2. a solution which identifies all the application components and their connectivitiy  
 3. tests for each of the architecture/application component types  

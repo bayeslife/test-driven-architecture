@@ -1,5 +1,10 @@
 [
   {
+    "componentType": "User",
+    "implementationTests": [ "UserExists"],
+    "infrastructureTests":[  ]
+  },
+  {
     "componentType": "FW",
     "implementationTests": [
     ],

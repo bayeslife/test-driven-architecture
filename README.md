@@ -1,5 +1,8 @@
 # Test Driven Architecture
 
+There is a blog about this functionality
+[here](https://xceptionale.wordpress.com/2016/09/25/generating-detailed-designs/)
+
 ## Problem statemnet
 
 When specifying an architecture for a solution this could ideally be done by creating tests that fail

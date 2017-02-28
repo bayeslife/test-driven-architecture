@@ -1,21 +1,8 @@
 import handlebars = require('handlebars');
 
-import paramCase = require('param-case')
-import pascalCase = require('pascal-case')
-import camelCase = require('camel-case')
-
-import changecase = require('change-case');
 
 
 export const helpers = {
-
-  paramCase: function(val: string) {
-      return paramCase(val);
-  },
-
-  pascalCase: function(val: string) {
-      return pascalCase(val);
-  },
 
   echo: function(val: any) {
     console.log(val);
@@ -63,10 +50,6 @@ export const helpers = {
     return text.toUpperCase();
   },
   asJson: function(j: any) {
-    //console.log("aaaaaaaaaaaaaaaaaaaaaas");
-    //console.log(j);
     return JSON.stringify(j);
   }
 };
-
-//}

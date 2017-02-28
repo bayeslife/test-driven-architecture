@@ -113,6 +113,7 @@ class Renderer {
               return r.prepare(fn);
             });
             r.templates[filename] = handlebars.compile(ast);
+            console.log("RegisterPartial:"+ filename);
             handlebars.registerPartial(filename,r.templates[filename]);
             if(promises.length>0){
               Promise.all(promises).then(function(){

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{{raml.title}}</title>
+  <title>Infrastructure Tests</title>
 
 <style>
     {{> bootstrap.css}}
@@ -18,265 +18,40 @@
      {{> main.css}}
   </style>
 
+  <script type="text/javascript">{{> cucumber.js}}</script>
+  <script type="text/javascript">{{> ansi_up.js}}</script>
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-
-  ga('create', 'UA-76789851-1', 'auto', {
-        'allowLinker': true,
-        'storage': 'none','clientId':localStorage.getItem('gaClientId')
-    });
-
-  ga('set', 'checkProtocolTask', null);
-  ga('set','page','/{{pascalCase solution.title}}');
-  ga('send', 'pageview');
-
-</script>
+  <script type="text/javascript">{{> ../bundle/bundle.js}}</script>
 
 </head>
 <body>
   <div class="container">
 
-  <h1>Infrastructure View of solution</h1>
+  <div class="header">
+    <h2>Infrastructure Tests</h2>
+  </div>
 
-  <h2>Implementation Tests</h2>
-    <table>
-      <tr>
-        <th>Service</th>
-        <th>Service Type</th>
-        <th>Infrastructure</th>
-        <th>Infrastructure Type</th>
-        <th>Environment</th>
-        <th>Zone</th>
-        <th>host</th>
-        <th>test</th>
-      </tr>
-      {{#each implementationTests}}
-        <tr>
-          <td>{{service}}</td>
-          <td>{{serviceType}}</td>
-          <td>{{infrastructure}}</td>
-          <td>{{infrastructureType}}</td>
-          <td>{{environment}}</td>
-          <td>{{zone}}</td>
-          <td>{{#each hosts}}
-                {{name}},
-              {{/each}}
-          </td>
-          <td>{{#each tests}}{{this}},{{/each}}</td>
-        </tr>
-      {{/each}}
-  </table>
+  <div class="main">
+    <ul class="nav nav-pills" role="tablist">
+      <li class="active"><a href="#feature-tab" data-toggle="tab">Feature</a></li>
+      <li><a href="#output-tab" data-toggle="tab">Output</a></li>
+    </ul>
 
-  <h2>Load Balancers</h2>
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Zone</th>
-        <th>Service</th>
-        <th>Infrastructure</th>
-        <th>Target Hosts</th>
-      </tr>
-      {{#each loadbalancers}}
-        <tr>
-          <td>{{name}}</td>
-          <td>{{zone}}</td>
-          <td>{{service}}</td>
-          <td>{{infrastructure}}</td>
-          <td>
-            {{#each hosts}}
-              {{name}},
-            {{/each}}
-          </td>
-        </tr>
-      {{/each}}
-  </table>
+    <div class="tab-content">
+      <div class="tab-pane active" id="feature-tab">
+        <textarea rows="50" cols="100"  id="feature">{{feature}}</textarea>
+      </div>
+      <div class="tab-pane" id="output-tab">
+        <pre id="output"></pre>
+      </div>
+    </div>
+  </div>
 
+  <script type="text/javascript">{{> example.js}}</script>
+  <script type="text/javascript">{{> world.js}}</script>
+  <script type="text/javascript">{{> steps.js}}</script>
 
-  <h2>Firewall Requirement</h2>
-  <table>
-    <tr>
-      <th>Rule</th>
-      <th>Source Environment</th>
-
-      <th>Source Component<br/>Source Type</th>
-
-      <th>Source Host<br/>Zone</th>
-      <th>Target Host<br/>Zone</th>
-      <th>Target Component<br/>Target Type</th>
-      <th>Tests</th>
-
-
-    </tr>
-    {{#each firewall}}
-      <tr>
-        <td>{{rule}}</td>
-
-        <td>{{sEnvironment}}</td>
-
-        <td>{{sComponent}}<br/>{{sType}}</td>
-
-        <td>{{#each sHosts}}{{name}},{{/each}}<br/>{{sZone}}</td>
-        <td>{{#each tHosts}}{{name}},{{/each}}<br/>{{tZone}}</td>
-
-        <td>{{tComponent}}<br/>{{tType}}</td>
-        <td>{{#each tests}}{{this}},{{/each}}</td>
-
-      </tr>
-    {{/each}}
-</table>
-
-<hr/>
-
-  <h2>Connectivity</h2>
-    <table>
-      <tr>
-        <th>Source Service</th>
-        <th>Source Service Type</th>
-        <th>Source Infrastructure Type</th>
-        <th>Source Infrastructure</th>
-        <th>Source Zone</th>
-        <th>Source Environment</th>
-
-        <th>Target Service</th>
-        <th>Target Service Type</th>
-        <th>Target Infrastructure Type</th>
-        <th>Target Infrastructure</th>
-        <th>Target Zone</th>
-        <th>Target Environment</th>
-      </tr>
-      {{#each connectivity}}
-        <tr>
-          <td>{{sComponent}}</td>
-          <td>{{sType}}</td>
-          <td>{{sInfrastructureType}}</td>
-          <td>{{sInfrastructure}}</td>
-          <td>{{sZone}}</td>
-          <td>{{sEnvironment}}</td>
-
-          <td>{{tComponent}}</td>
-          <td>{{tType}}</td>
-          <td>{{tInfrastructureType}}</td>
-          <td>{{tInfrastructure}}</td>
-          <td>{{tZone}}</td>
-          <td>{{tEnvironment}}</td>
-        </tr>
-      {{/each}}
-  </table>
-
-  <h2>Hosts</h2>
-    <table>
-      <tr>
-        <th>Environment</th>
-        <th>Zone</th>
-        <th>Infrastructure Type</th>
-        <th>Infrastructure</th>
-        <th>Host</th>
-      </tr>
-      {{#each hosts}}
-        <tr>
-          <td>{{environment}}</td>
-          <td>{{zone}}</td>
-          <td>{{infrastructureType}}</td>
-          <td>{{infrastructure}}</td>
-          <td>{{host}}</td>
-        </tr>
-      {{/each}}
-  </table>
-
-  <h2>Service Type to Infrastructure Type Mapping</h2>
-    <table>
-      <tr>
-        <th>Service Type</th>
-        <th>Infrastructure</th>
-        <th>Infrastructure Type</th>
-        <th>Zone</th>
-        <th>Environment</th>
-
-      </tr>
-      {{#each serviceTypes}}
-        <tr>
-          <td>{{serviceType}}</td>
-          <td>{{infrastructure}}</td>
-          <td>{{infrastructureType}}</td>
-          <td>{{zone}}</td>
-          <td>{{environment}}</td>
-        </tr>
-      {{/each}}
-  </table>
-
-
-  <h2>Infrastructure Types</h2>
-    <table>
-      <tr>
-        <th>Environment</th>
-        <th>Zone</th>
-        <th>Infrastructure Type</th>
-        <th>Hosts</th>
-      </tr>
-      {{#each componentTypes}}
-        <tr>
-          <td>{{environment}}</td>
-          <td>{{zone}}</td>
-          <td>{{component}}</td>
-          <td>{{#each hosts}}
-                {{name}},
-              {{/each}}
-          </td>
-        </tr>
-      {{/each}}
-  </table>
-
-  <h2>Service Dependencies</h2>
-    <table>
-      <tr>
-        <th>Source</th>
-        <th>Type</th>
-        <th>Target</th>
-      </tr>
-      {{#each dependencies}}
-        <tr>
-          <td>{{source}}</td>
-          <td>{{type}}</td>
-          <td>{{targetComponent}}</td>
-        </tr>
-      {{/each}}
-  </table>
-
-  <h2>Services</h2>
-    <table>
-      <tr>
-        <th> Service</th>
-        <th> Service Type</th>
-        <th> Infrastructure Type</th>
-        <th> Infrastructure</th>
-        <th> Zone</th>
-        <th> Environment</th>
-<th>Hosts</th>
-
-      </tr>
-      {{#each services}}
-        <tr>
-          <td>{{service}}</td>
-          <td>{{serviceType}}</td>
-          <td>{{infrastructureType}}</td>
-          <td>{{infrastructure}}</td>
-          <td>{{zone}}</td>
-          <td>{{environment}}</td>
-          <td>{{#each hosts}}
-                {{name}},
-              {{/each}}
-          </td>
-        </tr>
-      {{/each}}
-  </table>
-
-</div>
-
+  <div class="footer">
+    <button class="btn" id="run-feature">Run Tests</button>
+  </div>
 </body>
-
-</html>

@@ -12,8 +12,7 @@
   "files": [
      /*"src/simple.ts",*/
     "src/templates/helpers.ts",
-    "src/index.ts",
-    "src/denormalizer.ts",
+    "src/index.ts",    
     "src/templates/html.ts",
     "typings/index.d.ts"
   ]
